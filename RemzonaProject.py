@@ -1,4 +1,5 @@
 from logging import setLogRecordFactory
+from opcode import hasjabs
 from tkinter import *
 import time
 
@@ -53,6 +54,7 @@ class Lift(Tk):
         self.cleaner = 0
         self.cleaner_var = 0
         self.x_cleaner = 0
+        
 
 
         
@@ -262,7 +264,8 @@ class Lift(Tk):
                         offvalue=0,
                         variable=self.cleaner_var)
             self.check_cleaner.grid(row=2, column=1, sticky='nwes')
-
+            
+            self.welding_machine_auto_var = IntVar()
             self.check_welding_machine_auto = Checkbutton(self.frame_options, text='Сварочный полуавтомат',
                         width='15',
                         height='1',
