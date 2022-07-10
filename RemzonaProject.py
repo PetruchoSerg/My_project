@@ -1,5 +1,4 @@
 from logging import setLogRecordFactory
-from opcode import hasjabs
 from tkinter import *
 import time
 
@@ -54,6 +53,9 @@ class Lift(Tk):
         self.cleaner = 0
         self.cleaner_var = 0
         self.x_cleaner = 0
+        self.welding_machine_auto = 0
+        self.welding_machine_auto_var = 0
+        self.x_welding_machine_auto = 0
         
 
 
@@ -92,8 +94,9 @@ class Lift(Tk):
             self.bt_reset.config(stat = NORMAL)
             counter()
             self.main_count = self.lift_count + self.drill + self.grinding_machine + self.screwdriver \
-            + self.press + self.fan + self.cleaner  # Здесь добавляем дополнительные услуги
+            + self.press + self.fan + self.cleaner + self.welding_machine_auto # Здесь добавляем дополнительные услуги
             self.lb_main_count.config(text = f'Итого : {self.main_count} РУБ ')
+            
 
         def counter():
             self.count_hour = int(self.finish_time[:2])
@@ -130,6 +133,10 @@ class Lift(Tk):
             self.x_fan = 0
             self.cleaner = 0
             self.x_cleaner = 0
+            self.welding_machine_auto = 0
+            self.welding_machine_auto_var = 0
+            self.x_welding_machine_auto = 0
+          
 
         def price_tools():
             self.main_price = price + self.check_tools_var.get()
@@ -166,6 +173,13 @@ class Lift(Tk):
             def price_cleaner(): 
                 self.cleaner = 0
                 self.cleaner += self.cleaner_var.get()
+
+            def price_welding_machine_auto(*args):
+                self.welding_machine_auto = 0
+                self.welding_machine_auto += self.welding_machine_auto_var.get()
+
+            
+        
                 
 
             def launch():
@@ -175,6 +189,8 @@ class Lift(Tk):
                 self.press_var.set(self.x_press)
                 self.fan_var.set(self.x_fan)
                 self.cleaner_var.set(self.x_cleaner)
+                self.welding_machine_auto_var.set(self.x_welding_machine_auto)
+
                 
 
             def memory():
@@ -184,6 +200,8 @@ class Lift(Tk):
                 self.x_press = self.press_var.get()
                 self.x_fan = self.fan_var.get()
                 self.x_cleaner = self.cleaner_var.get()
+                self.x_welding_machine_auto = self.welding_machine_auto_var.get()
+                
                 self.win.destroy()
 
             self.win.protocol('WM_DELETE_WINDOW', memory)
@@ -265,12 +283,16 @@ class Lift(Tk):
                         variable=self.cleaner_var)
             self.check_cleaner.grid(row=2, column=1, sticky='nwes')
             
-            self.welding_machine_auto_var = IntVar()
+            '''self.welding_machine_auto_var = IntVar()
             self.check_welding_machine_auto = Checkbutton(self.frame_options, text='Сварочный полуавтомат',
                         width='15',
                         height='1',
                         font=('Arial',10),
-                        anchor='w')
+                        anchor='w',
+                        command=price_welding_machine_auto,
+                        onvalue=150,
+                        offvalue=0,
+                        variable=self.welding_machine_auto_var)
             self.check_welding_machine_auto.grid(row=3, column=0, columnspan=2, sticky='nwes')
 
             self.check_welding_machine = Checkbutton(self.frame_options, text='Сварочный инвертор',
@@ -278,23 +300,37 @@ class Lift(Tk):
                         height='1',
                         font=('Arial',10),
                         anchor='w')
-            self.check_welding_machine.grid(row=4, column=0, columnspan=2, sticky='nwes')
+            self.check_welding_machine.grid(row=4, column=0, columnspan=2, sticky='nwes')'''
 
             self.check_polishing = Checkbutton(self.frame_options, text='Полировка',
                         width='15',
                         height='1',
                         font=('Arial',10),
                         anchor='w')
-            self.check_polishing.grid(row=5, column=0, sticky='nwes')
+            self.check_polishing.grid(row=3, column=0, sticky='nwes')
 
             self.check_tornador = Checkbutton(self.frame_options, text='Торнадор',
                         width='15',
                         height='1',
                         font=('Arial',10),
                         anchor='w')
-            self.check_tornador.grid(row=5, column=1, sticky='nwes')
+            self.check_tornador.grid(row=3, column=1, sticky='nwes')
 
+            self.lb_welding_machine_auto = Label(self.frame_options, text='Сварочный полуавтомат',
+                        width='15',
+                        height='1',
+                        font=('Arial',10),
+                        anchor= 'c')
+            self.lb_welding_machine_auto .grid(row=4, column=0, columnspan=2, sticky='nwes')
+            
+            self.welding_machine_auto_var = IntVar()
+            self.sc_welding_machine_auto = Scale(self.frame_options, from_ = 0, to = 1000,
+                        resolution= 250, orient= HORIZONTAL, variable=self.welding_machine_auto_var, 
+                        command= price_welding_machine_auto)
+            self.sc_welding_machine_auto.grid(row=5, column=0, columnspan=2, sticky='nwes')
+            
 
+           
             launch()
 
 
