@@ -8,7 +8,7 @@ root['bg'] = 'pink'
 
 
 def timing():
-    current_time = time.strftime('%H : %M : %S')
+    current_time = time.strftime('%d - %m - %Y г.   %H : %M : %S')
     lb_time.config(text=current_time)
     lb_time.after(200, timing)
 
@@ -19,6 +19,10 @@ lb_time = Label(font=('Arial',20,'bold'),
                 width='10')
 timing()
 lb_time.grid(row=0, column=0, columnspan=4, sticky='nwse')
+
+result = open(f"{time.strftime('%d - %m - %Y г.')}", "w+")
+result.write(f"{time.strftime('%d - %m - %Y г.')}")
+result.close()
 
 
 
@@ -56,6 +60,15 @@ class Lift(Tk):
         self.welding_machine_auto = 0
         self.welding_machine_auto_var = 0
         self.x_welding_machine_auto = 0
+        self.polishing = 0
+        self.polishing_var = 0
+        self.x_polishing = 0
+        self.tornador = 0
+        self.tornador_var = 0
+        self.x_tornador = 0
+        self.welding_machine = 0
+        self.welding_machine_var = 0
+        self.x_welding_machine = 0
         
 
 
@@ -74,6 +87,7 @@ class Lift(Tk):
             timer()
             self.bt_stop.config(stat = NORMAL)
             self.bt_start.config(stat = DISABLED)
+            self.lb_main.config(bg = 'red')
   
         def timer():
             self.stop = time.time() 
@@ -92,9 +106,16 @@ class Lift(Tk):
             self.lb_finishtime.config(text=self.finish_time)
             self.bt_stop.config(stat = DISABLED)
             self.bt_reset.config(stat = NORMAL)
+            self.lb_main.config(bg = 'blue')
+            result = open(f"{time.strftime('%d - %m - %Y г.')}", "a+")
+            result.write(f"\n{self.entry_main_var.get()}     {time.strftime('%H : %M : %S',(time.gmtime(self.delta)))}")
+            result.close()
+            
+            
             counter()
             self.main_count = self.lift_count + self.drill + self.grinding_machine + self.screwdriver \
-            + self.press + self.fan + self.cleaner + self.welding_machine_auto # Здесь добавляем дополнительные услуги
+            + self.press + self.fan + self.cleaner + self.welding_machine_auto + self.polishing \
+            + self.tornador + self.welding_machine # Здесь добавляем дополнительные услуги
             self.lb_main_count.config(text = f'Итого : {self.main_count} РУБ ')
             
 
@@ -134,8 +155,14 @@ class Lift(Tk):
             self.cleaner = 0
             self.x_cleaner = 0
             self.welding_machine_auto = 0
-            self.welding_machine_auto_var = 0
             self.x_welding_machine_auto = 0
+            self.polishing = 0
+            self.x_polishing = 0
+            self.tornador = 0
+            self.x_tornador = 0
+            self.welding_machine = 0
+            self.x_welding_machine = 0
+            self.entry_main.delete(0, END)
           
 
         def price_tools():
@@ -178,6 +205,20 @@ class Lift(Tk):
                 self.welding_machine_auto = 0
                 self.welding_machine_auto += self.welding_machine_auto_var.get()
 
+            def price_polishing():
+                self.polishing = 0
+                self.polishing += self.polishing_var.get()
+
+            def price_tornador():
+                self.tornador = 0
+                self.tornador += self.tornador_var.get()
+
+            def price_welding_machine():
+                self.welding_machine = 0
+                self.welding_machine += self.welding_machine_var.get()
+
+
+
             
         
                 
@@ -190,6 +231,9 @@ class Lift(Tk):
                 self.fan_var.set(self.x_fan)
                 self.cleaner_var.set(self.x_cleaner)
                 self.welding_machine_auto_var.set(self.x_welding_machine_auto)
+                self.polishing_var.set(self.x_polishing)
+                self.tornador_var.set(self.x_tornador)
+                self.welding_machine_var.set(self.x_welding_machine)
 
                 
 
@@ -201,6 +245,9 @@ class Lift(Tk):
                 self.x_fan = self.fan_var.get()
                 self.x_cleaner = self.cleaner_var.get()
                 self.x_welding_machine_auto = self.welding_machine_auto_var.get()
+                self.x_polishing = self.polishing_var.get()
+                self.x_tornador = self.tornador_var.get()
+                self.x_welding_machine = self.welding_machine_var.get()
                 
                 self.win.destroy()
 
@@ -283,37 +330,28 @@ class Lift(Tk):
                         variable=self.cleaner_var)
             self.check_cleaner.grid(row=2, column=1, sticky='nwes')
             
-            '''self.welding_machine_auto_var = IntVar()
-            self.check_welding_machine_auto = Checkbutton(self.frame_options, text='Сварочный полуавтомат',
-                        width='15',
-                        height='1',
-                        font=('Arial',10),
-                        anchor='w',
-                        command=price_welding_machine_auto,
-                        onvalue=150,
-                        offvalue=0,
-                        variable=self.welding_machine_auto_var)
-            self.check_welding_machine_auto.grid(row=3, column=0, columnspan=2, sticky='nwes')
-
-            self.check_welding_machine = Checkbutton(self.frame_options, text='Сварочный инвертор',
-                        width='15',
-                        height='1',
-                        font=('Arial',10),
-                        anchor='w')
-            self.check_welding_machine.grid(row=4, column=0, columnspan=2, sticky='nwes')'''
-
+            self.polishing_var = IntVar()
             self.check_polishing = Checkbutton(self.frame_options, text='Полировка',
                         width='15',
                         height='1',
                         font=('Arial',10),
-                        anchor='w')
+                        anchor='w',
+                        command=price_polishing,
+                        onvalue=150,
+                        offvalue=0,
+                        variable=self.polishing_var)
             self.check_polishing.grid(row=3, column=0, sticky='nwes')
 
+            self.tornador_var = IntVar()
             self.check_tornador = Checkbutton(self.frame_options, text='Торнадор',
                         width='15',
                         height='1',
                         font=('Arial',10),
-                        anchor='w')
+                        anchor='w',
+                        command=price_tornador,
+                        onvalue=250,
+                        offvalue=0,
+                        variable=self.tornador_var)
             self.check_tornador.grid(row=3, column=1, sticky='nwes')
 
             self.lb_welding_machine_auto = Label(self.frame_options, text='Сварочный полуавтомат',
@@ -321,13 +359,25 @@ class Lift(Tk):
                         height='1',
                         font=('Arial',10),
                         anchor= 'c')
-            self.lb_welding_machine_auto .grid(row=4, column=0, columnspan=2, sticky='nwes')
+            self.lb_welding_machine_auto .grid(row=5, column=0, columnspan=2, sticky='nwes')
             
             self.welding_machine_auto_var = IntVar()
             self.sc_welding_machine_auto = Scale(self.frame_options, from_ = 0, to = 1000,
                         resolution= 250, orient= HORIZONTAL, variable=self.welding_machine_auto_var, 
                         command= price_welding_machine_auto)
-            self.sc_welding_machine_auto.grid(row=5, column=0, columnspan=2, sticky='nwes')
+            self.sc_welding_machine_auto.grid(row=6, column=0, columnspan=2, sticky='nwes')
+
+            self.welding_machine_var = IntVar()
+            self.check_welding_machine = Checkbutton(self.frame_options, text='Сварочный инвертор',
+                        width='15',
+                        height='1',
+                        font=('Arial',10),
+                        anchor='w',
+                        command=price_welding_machine,
+                        onvalue=200,
+                        offvalue=0,
+                        variable=self.welding_machine_var)
+            self.check_welding_machine.grid(row=4, column=0, columnspan=2, sticky='nwes')
             
 
            
@@ -342,7 +392,9 @@ class Lift(Tk):
                 text=f'{name}')
         self.lb_main.grid(row=0, column=0, columnspan=2, sticky='nwes')
 
-        self.entry_main = Entry(self.frame, bg='white')                        # Окно ввода 
+    
+        self.entry_main_var = StringVar()
+        self.entry_main = Entry(self.frame, bg='white', textvariable= self.entry_main_var)                        # Окно ввода 
         self.entry_main.grid(row=1, column=0, columnspan=2, sticky='nwes')
 
         self.check_tools_var = IntVar()
@@ -373,7 +425,7 @@ class Lift(Tk):
         self.bt_start.grid(row=3, column=1, sticky='nwse')
 
         self.lb_finishtime = Label(self.frame, font=('Arial',12,'bold'), 
-                bg='red',
+                bg='green',
                 fg='white',
                 height='1',
                 width='13',
@@ -396,7 +448,7 @@ class Lift(Tk):
         self.bt_stop.grid(row=5, column=1, sticky='nwse')
 
         self.lb_main_count = Label(self.frame, font=('Arial',12,'bold'), 
-                bg='red',
+                bg='green',
                 fg='white',
                 height='1',
                 width='13',
