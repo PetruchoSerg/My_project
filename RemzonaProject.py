@@ -20,8 +20,8 @@ lb_time = Label(font=('Arial',20,'bold'),
 timing()
 lb_time.grid(row=0, column=0, columnspan=4, sticky='nwse')
 
-result = open(f"{time.strftime('%d - %m - %Y г.')}", "w+")
-result.write(f"{time.strftime('%d - %m - %Y г.')}")
+result = open(f"{time.strftime('%d - %m - %Y г')}.csv", "w+")
+result.write(f"{time.strftime('%d - %m - %Y г')}")
 result.close()
 
 
@@ -37,7 +37,7 @@ class Lift(Tk):
         self.stop = 0
         self.id_after = 0
         self.finish_time = 0
-        self.main_price = price
+        self.main_price = 0
         self.lift_count = 0
         self.drill = 0
         self.drill_var = 0
@@ -69,6 +69,7 @@ class Lift(Tk):
         self.welding_machine = 0
         self.welding_machine_var = 0
         self.x_welding_machine = 0
+        self.main_list = ''
         
 
 
@@ -107,15 +108,17 @@ class Lift(Tk):
             self.bt_stop.config(stat = DISABLED)
             self.bt_reset.config(stat = NORMAL)
             self.lb_main.config(bg = 'blue')
-            result = open(f"{time.strftime('%d - %m - %Y г.')}", "a+")
-            result.write(f"\n{self.entry_main_var.get()}     {time.strftime('%H : %M : %S',(time.gmtime(self.delta)))}")
+            list()
+            result = open(f"{time.strftime('%d - %m - %Y г')}.csv", "a+")
+            result.write(f"\n{self.entry_main_var.get()},{time.strftime('%H : %M : %S',(time.gmtime(self.start)))},"\
+                f"{self.finish_time},{time.strftime('%H : %M : %S',(time.gmtime(self.stop)))},{self.main_list}")
             result.close()
             
             
             counter()
             self.main_count = self.lift_count + self.drill + self.grinding_machine + self.screwdriver \
-            + self.press + self.fan + self.cleaner + self.welding_machine_auto + self.polishing \
-            + self.tornador + self.welding_machine # Здесь добавляем дополнительные услуги
+            + self.press + self.fan + self.cleaner + self.welding_machine_auto \
+            + self.welding_machine # Здесь добавляем дополнительные услуги
             self.lb_main_count.config(text = f'Итого : {self.main_count} РУБ ')
             
 
@@ -166,7 +169,36 @@ class Lift(Tk):
           
 
         def price_tools():
-            self.main_price = price + self.check_tools_var.get()
+            self.main_price += price + self.check_tools_var.get() 
+
+        
+
+        def list():
+            self.main_list = ''
+            if self.main_price == 200:
+                self.main_list += 'Подъемник '
+            elif self.main_price == 150:
+                self.main_list += 'Яма '
+            elif self.main_price == 100:
+                self.main_list += 'Место '
+            
+            if self.drill == 50:
+                self.main_list += 'Дрель '
+            if self.grinding_machine == 50:
+                self.main_list += 'Болгарка '
+            if self.screwdriver == 100:
+                self.main_list += 'Шуруповерт '
+            if self.press == 150:
+                self.main_list += 'Пресс '
+            if self.fan == 150:
+                self.main_list += 'Фен ' 
+            if self.cleaner == 250:
+                self.main_list += 'Пылесос '
+             
+        
+        
+             
+             
 
 
         def options():
@@ -208,10 +240,12 @@ class Lift(Tk):
             def price_polishing():
                 self.polishing = 0
                 self.polishing += self.polishing_var.get()
+                self.main_price += self.polishing
 
             def price_tornador():
                 self.tornador = 0
                 self.tornador += self.tornador_var.get()
+                self.main_price += self.tornador
 
             def price_welding_machine():
                 self.welding_machine = 0
