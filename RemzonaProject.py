@@ -18,7 +18,7 @@ lb_time = Label(font=('Arial',20,'bold'),
                 height='2',
                 width='10')
 timing()
-lb_time.grid(row=0, column=0, columnspan=4, sticky='nwse')
+lb_time.grid(row=0, column=0, columnspan=6, sticky='nwse')
 
 result = open(f"{time.strftime('%d - %m - %Y г')}.csv", "w+")
 result.write(f"{time.strftime('%d - %m - %Y г')}")
@@ -37,7 +37,7 @@ class Lift(Tk):
         self.stop = 0
         self.id_after = 0
         self.finish_time = 0
-        self.main_price = 0
+        self.main_price = price
         self.lift_count = 0
         self.drill = 0
         self.drill_var = 0
@@ -69,6 +69,8 @@ class Lift(Tk):
         self.welding_machine = 0
         self.welding_machine_var = 0
         self.x_welding_machine = 0
+        self.time1 = 0
+        self.time2 = 0
         self.main_list = ''
         
 
@@ -84,11 +86,13 @@ class Lift(Tk):
 
         def click_start():
             self.lb_start.config(text=time.strftime('%H : %M : %S'))
+            self.time1 = time.strftime('%H : %M : %S')
             self.start = time.time()
             timer()
             self.bt_stop.config(stat = NORMAL)
             self.bt_start.config(stat = DISABLED)
             self.lb_main.config(bg = 'red')
+            
   
         def timer():
             self.stop = time.time() 
@@ -100,6 +104,7 @@ class Lift(Tk):
 
         def click_stop():
             self.lb_stop.config(text=time.strftime('%H : %M : %S'))
+            self.time2 = time.strftime('%H : %M : %S')
             self.stop = time.time()
             self.delta = int(self.stop - self.start)
             self.finish_time = time.strftime('%H : %M : %S',(time.gmtime(self.delta)))
@@ -108,10 +113,11 @@ class Lift(Tk):
             self.bt_stop.config(stat = DISABLED)
             self.bt_reset.config(stat = NORMAL)
             self.lb_main.config(bg = 'blue')
+            self.check_tools = self.check_tools_var.get()
             list()
             result = open(f"{time.strftime('%d - %m - %Y г')}.csv", "a+")
-            result.write(f"\n{self.entry_main_var.get()},{time.strftime('%H : %M : %S',(time.gmtime(self.start)))},"\
-                f"{self.finish_time},{time.strftime('%H : %M : %S',(time.gmtime(self.stop)))},{self.main_list}")
+            result.write(f"\n{self.entry_main_var.get()},{self.time1},"\
+                f"{self.finish_time},{self.time2},{self.main_list}")
             result.close()
             
             
@@ -169,19 +175,15 @@ class Lift(Tk):
           
 
         def price_tools():
-            self.main_price += price + self.check_tools_var.get() 
+            self.main_price += self.check_tools_var.get() 
 
         
 
         def list():
-            self.main_list = ''
-            if self.main_price == 200:
-                self.main_list += 'Подъемник '
-            elif self.main_price == 150:
-                self.main_list += 'Яма '
-            elif self.main_price == 100:
-                self.main_list += 'Место '
+            self.main_list = f'{name[:-3]}'
             
+            if self.check_tools > 0:
+                self.main_list += 'Инструмент '
             if self.drill == 50:
                 self.main_list += 'Дрель '
             if self.grinding_machine == 50:
@@ -192,8 +194,17 @@ class Lift(Tk):
                 self.main_list += 'Пресс '
             if self.fan == 150:
                 self.main_list += 'Фен ' 
-            if self.cleaner == 250:
+            if self.cleaner == 150:
                 self.main_list += 'Пылесос '
+            if self.welding_machine == 200:
+                self.main_list += 'Сварка Инв. '
+            if self.welding_machine_auto > 0:
+                self.main_list += f'Сварка п\а ({self.welding_machine_auto}) '
+            if self.polishing > 0:
+                self.main_list += 'Полировка '
+            if self.tornador  > 0:
+                self.main_list += 'Торнадор '
+            
              
         
         
@@ -422,7 +433,7 @@ class Lift(Tk):
                 bg='blue',
                 fg='white',
                 height='2',
-                width='30',
+                width='24',
                 text=f'{name}')
         self.lb_main.grid(row=0, column=0, columnspan=2, sticky='nwes')
 
@@ -433,9 +444,9 @@ class Lift(Tk):
 
         self.check_tools_var = IntVar()
         self.check_tools = Checkbutton(self.frame, text='Инструмент',
-                        width='15',
+                        width='12',
                         height='1',
-                        font=('Arial',12),
+                        font=('Arial',11),
                         anchor='w',
                         command=price_tools,
                         onvalue=50,
@@ -451,7 +462,7 @@ class Lift(Tk):
                 bg='blue',
                 fg='white',
                 height='1',
-                width='13',
+                width='12',
                 text='-- : -- : --')
         self.lb_start.grid(row=3, column=0, sticky='nwse')
 
@@ -462,7 +473,7 @@ class Lift(Tk):
                 bg='green',
                 fg='white',
                 height='1',
-                width='13',
+                width='12',
                 text='-- : -- : --'
                 )
         self.lb_finishtime.grid(row=4, column=0, sticky='nwse')
@@ -474,7 +485,7 @@ class Lift(Tk):
                 bg='blue',
                 fg='white',
                 height='1',
-                width='13',
+                width='12',
                 text='-- : -- : --')
         self.lb_stop.grid(row=5, column=0, sticky='nwse')
 
@@ -485,7 +496,7 @@ class Lift(Tk):
                 bg='green',
                 fg='white',
                 height='1',
-                width='13',
+                width='12',
                 text=' - - -   RUB'
                 )
         self.lb_main_count.grid(row=6, column=0, columnspan=2, sticky='nwse')
@@ -505,6 +516,12 @@ def LiftThree():
 def LiftFour():
     lift_four = Lift(1, 3, 200, name = 'Подъемник № 4', bg = 'white')
 
+def PlaceOne():
+    lift_four = Lift(1, 4, 100, name = 'Место № 1')
+
+def PlaceTwo():
+    lift_four = Lift(1, 5, 100, name = 'Место № 2')
+
 def PitOne():
     pit_one = Lift(2, 0 , 150, name = 'Яма № 1', bg = 'white')
     
@@ -515,11 +532,16 @@ def PitTwo():
 
 def PitThree():
     pit_three = Lift(2, 2, 150, name = 'Яма № 3', bg = 'white')
-    #pit_three.main_price = 150
+    
 
 def PitFour():
     pit_four = Lift(2, 3, 150, name = 'Яма № 4', bg = 'white')
-    #pit_four.main_price = 150
+    
+def PlaceThree():
+    lift_four = Lift(2, 4, 100, name = 'Место № 3')
+
+def PlaceFour():
+    lift_four = Lift(2, 5, 100, name = 'Место № 4')
 
 
 
@@ -531,6 +553,10 @@ PitOne()
 PitTwo()
 PitThree()
 PitFour()
+PlaceOne()
+PlaceTwo()
+PlaceThree()
+PlaceFour()
 
 
 root.mainloop()
