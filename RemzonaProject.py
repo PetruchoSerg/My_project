@@ -73,13 +73,14 @@ class Lift(Tk):
         self.time2 = 0
         self.main_list = ''
         
-
-
         
-        
+
 
         
         
+
+        
+       
 
 
 
@@ -114,18 +115,22 @@ class Lift(Tk):
             self.bt_reset.config(stat = NORMAL)
             self.lb_main.config(bg = 'blue')
             self.check_tools = self.check_tools_var.get()
-            list()
-            result = open(f"{time.strftime('%d - %m - %Y г')}.csv", "a+")
-            result.write(f"\n{self.entry_main_var.get()},{self.time1},"\
-                f"{self.finish_time},{self.time2},{self.main_list}")
-            result.close()
-            
             
             counter()
             self.main_count = self.lift_count + self.drill + self.grinding_machine + self.screwdriver \
             + self.press + self.fan + self.cleaner + self.welding_machine_auto \
             + self.welding_machine # Здесь добавляем дополнительные услуги
             self.lb_main_count.config(text = f'Итого : {self.main_count} РУБ ')
+
+            
+
+            list()
+            result = open(f"{time.strftime('%d - %m - %Y г')}.csv", "a+")
+            result.write(f"\n{self.entry_main_var.get()},{self.time1},"\
+                f"{self.finish_time},{self.time2},{self.main_list},{self.main_count}")
+            result.close()
+            
+            calculation()
             
 
         def counter():
@@ -206,7 +211,20 @@ class Lift(Tk):
                 self.main_list += 'Торнадор '
             
              
-        
+        def calculation():
+            self.win2 = Toplevel()
+            self.win2.title(f'{name}')
+            self.frame_calculation = Frame(self.win2, bg='red')
+            self.frame_calculation.grid(row=0, column=0, columnspan=4, rowspan=2, sticky='nwse')
+
+            self.lb_pay = Label(self.frame_calculation, font=('Arial',12,'bold'),           
+                bg='blue',
+                fg='white',
+                height='1',
+                width='30',
+                text=f'Итого : {self.main_count} РУБ ')
+            self.lb_pay.grid(row=0, column=0, columnspan=2, sticky='nwes')
+
         
              
              
