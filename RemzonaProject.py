@@ -213,16 +213,16 @@ class Lift(Tk):
              
         def calculation():
             self.win2 = Toplevel()
-            self.win2.title(f'{name}')
+            self.win2.title(f'{self.entry_main_var.get()}  {name}')
             self.frame_calculation = Frame(self.win2, bg='red')
             self.frame_calculation.grid(row=0, column=0, columnspan=4, rowspan=2, sticky='nwse')
 
             self.lb_pay = Label(self.frame_calculation, font=('Arial',12,'bold'),           
                 bg='blue',
                 fg='white',
-                height='1',
-                width='30',
-                text=f'Итого : {self.main_count} РУБ ')
+                height='4',
+                width='60',
+                text=f'Сумма : {self.main_count} РУБ \n Время : {self.finish_time} \n {self.main_list}')
             self.lb_pay.grid(row=0, column=0, columnspan=2, sticky='nwes')
 
         
@@ -232,7 +232,7 @@ class Lift(Tk):
 
         def options():
             self.win = Toplevel()
-            self.win.title(f'{name}')
+            self.win.title(f'{self.entry_main_var.get()}  {name}')
             self.win.grab_set()
             self.frame_options = Frame(self.win, bg='red')
             self.frame_options.grid(row=0, column=0, columnspan=6, rowspan=2, sticky='nwse')
