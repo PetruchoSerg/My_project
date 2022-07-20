@@ -72,6 +72,9 @@ class Lift(Tk):
         self.time1 = 0
         self.time2 = 0
         self.main_list = ''
+        self.socket = 0
+        self.socket_var = 0
+        self.x_socket = 0
         
         
 
@@ -119,7 +122,7 @@ class Lift(Tk):
             counter()
             self.main_count = self.lift_count + self.drill + self.grinding_machine + self.screwdriver \
             + self.press + self.fan + self.cleaner + self.welding_machine_auto \
-            + self.welding_machine # Здесь добавляем дополнительные услуги
+            + self.welding_machine + self.socket # Здесь добавляем дополнительные услуги
             self.lb_main_count.config(text = f'Итого : {self.main_count} РУБ ')
 
             
@@ -176,6 +179,8 @@ class Lift(Tk):
             self.x_tornador = 0
             self.welding_machine = 0
             self.x_welding_machine = 0
+            self.socket = 0
+            self.x_socket = 0
             self.entry_main.delete(0, END)
           
 
@@ -209,6 +214,8 @@ class Lift(Tk):
                 self.main_list += 'Полировка '
             if self.tornador  > 0:
                 self.main_list += 'Торнадор '
+            if self.socket  > 0:
+                self.main_list += 'Розетка '
             
              
         def calculation():
@@ -223,7 +230,24 @@ class Lift(Tk):
                 height='4',
                 width='60',
                 text=f'Сумма : {self.main_count} РУБ \n Время : {self.finish_time} \n {self.main_list}')
-            self.lb_pay.grid(row=0, column=0, columnspan=2, sticky='nwes')
+            self.lb_pay.grid(row=0, column=0, columnspan=3, sticky='nwes')
+
+            self.lb_pay_card = Label(self.frame_calculation, font=('Arial',12,'bold'),           
+                bg='blue',
+                fg='white',
+                height='1',
+                width='15',
+                text='Из них на карту :')
+            self.lb_pay_card.grid(row=1, column=0, sticky='nwes')
+
+
+            self.entry_pay_card = Entry(self.frame_calculation, font=('Arial',12,'bold'),           
+                bg='blue',
+                width='15')
+            self.entry_pay_card.grid(row=1, column=1, sticky='nwes')
+
+            self.bt_pay_card = Button(self.frame_calculation, text='Принять')
+            self.bt_pay_card.grid(row=1, column=2, sticky='nwse')
 
         
              
@@ -280,6 +304,10 @@ class Lift(Tk):
                 self.welding_machine = 0
                 self.welding_machine += self.welding_machine_var.get()
 
+            def price_socket():
+                self.socket = 0
+                self.socket += self.socket_var.get()
+
 
 
             
@@ -297,6 +325,7 @@ class Lift(Tk):
                 self.polishing_var.set(self.x_polishing)
                 self.tornador_var.set(self.x_tornador)
                 self.welding_machine_var.set(self.x_welding_machine)
+                self.socket_var.set(self.x_socket)
 
                 
 
@@ -311,6 +340,7 @@ class Lift(Tk):
                 self.x_polishing = self.polishing_var.get()
                 self.x_tornador = self.tornador_var.get()
                 self.x_welding_machine = self.welding_machine_var.get()
+                self.x_socket = self.socket_var.get()
                 
                 self.win.destroy()
 
@@ -423,6 +453,7 @@ class Lift(Tk):
                         font=('Arial',10),
                         anchor= 'c')
             self.lb_welding_machine_auto .grid(row=5, column=0, columnspan=2, sticky='nwes')
+
             
             self.welding_machine_auto_var = IntVar()
             self.sc_welding_machine_auto = Scale(self.frame_options, from_ = 0, to = 1000,
@@ -431,7 +462,7 @@ class Lift(Tk):
             self.sc_welding_machine_auto.grid(row=6, column=0, columnspan=2, sticky='nwes')
 
             self.welding_machine_var = IntVar()
-            self.check_welding_machine = Checkbutton(self.frame_options, text='Сварочный инвертор',
+            self.check_welding_machine = Checkbutton(self.frame_options, text='Сварочник',
                         width='15',
                         height='1',
                         font=('Arial',10),
@@ -440,8 +471,35 @@ class Lift(Tk):
                         onvalue=200,
                         offvalue=0,
                         variable=self.welding_machine_var)
-            self.check_welding_machine.grid(row=4, column=0, columnspan=2, sticky='nwes')
+            self.check_welding_machine.grid(row=4, column=0, sticky='nwes')
+
+            self.socket_var = IntVar()
+            self.check_socket = Checkbutton(self.frame_options, text='Розетка',
+                        width='15',
+                        height='1',
+                        font=('Arial',10),
+                        anchor='w',
+                        command=price_socket,
+                        onvalue=50,
+                        offvalue=0,
+                        variable=self.socket_var)
+            self.check_socket.grid(row=4, column=1, sticky='nwes')
+
+            self.lb_entry_other_pay = Label(self.frame_options, text='Дополнительные оплаты \n Сумма :                  За что :',
+                        width='15',
+                        height='3',
+                        font=('Arial',10),
+                        anchor= 'c')
+            self.lb_entry_other_pay .grid(row=7, column=0, columnspan=2, sticky='nwes')
+
+            self.entry_other_pay_var1 = StringVar()
+            self.entry_other_pay1 = Entry(self.frame_options, bg='white', textvariable= self.entry_other_pay_var1)
+            self.entry_other_pay1.grid(row=8, column=0, sticky='nwes')
+
             
+            self.entry_other_pay_var11 = StringVar()
+            self.entry_other_pay11 = Entry(self.frame_options, bg='white', textvariable= self.entry_other_pay_var11)
+            self.entry_other_pay11.grid(row=8, column=1, sticky='nwes')
 
            
             launch()
