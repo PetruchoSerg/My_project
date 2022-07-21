@@ -259,7 +259,7 @@ class Lift(Tk):
             self.win.title(f'{self.entry_main_var.get()}  {name}')
             self.win.grab_set()
             self.frame_options = Frame(self.win, bg='red')
-            self.frame_options.grid(row=0, column=0, columnspan=6, rowspan=2, sticky='nwse')
+            self.frame_options.grid(row=0, column=0, columnspan=10, rowspan=2, sticky='nwse')
 
             
             def price_drill(): 
@@ -501,6 +501,24 @@ class Lift(Tk):
             self.entry_other_pay11 = Entry(self.frame_options, bg='white', textvariable= self.entry_other_pay_var11)
             self.entry_other_pay11.grid(row=8, column=1, sticky='nwes')
 
+
+            self.entry_other_pay_var2 = StringVar()
+            self.entry_other_pay2 = Entry(self.frame_options, bg='white', textvariable= self.entry_other_pay_var2)
+            self.entry_other_pay2.grid(row=9, column=0, sticky='nwes')
+
+            
+            self.entry_other_pay_var22 = StringVar()
+            self.entry_other_pay22 = Entry(self.frame_options, bg='white', textvariable= self.entry_other_pay_var22)
+            self.entry_other_pay22.grid(row=9, column=1, sticky='nwes')
+
+            self.entry_other_pay_var3 = StringVar()
+            self.entry_other_pay3 = Entry(self.frame_options, bg='white', textvariable= self.entry_other_pay_var3)
+            self.entry_other_pay3.grid(row=10, column=0, sticky='nwes')
+
+            
+            self.entry_other_pay_var33 = StringVar()
+            self.entry_other_pay33 = Entry(self.frame_options, bg='white', textvariable= self.entry_other_pay_var33)
+            self.entry_other_pay33.grid(row=10, column=1, sticky='nwes')
            
             launch()
 
