@@ -1,4 +1,5 @@
 from logging import setLogRecordFactory
+from pickletools import int4
 from tkinter import *
 import time
 
@@ -21,7 +22,7 @@ timing()
 lb_time.grid(row=0, column=0, columnspan=6, sticky='nwse')
 
 result = open(f"{time.strftime('%d - %m - %Y г')}.csv", "w+")
-result.write(f"{time.strftime('%d - %m - %Y г')}")
+result.write("Марка+№,Заезд,Время,Выезд,ОснУслуги,ДопУслуги,Сумма,Нал,Карта")
 result.close()
 
 
@@ -71,10 +72,30 @@ class Lift(Tk):
         self.x_welding_machine = 0
         self.time1 = 0
         self.time2 = 0
-        self.main_list = ''
+        self.main_list = str()
+        self.other_list = str()
         self.socket = 0
         self.socket_var = 0
         self.x_socket = 0
+        self.entry_other_pay_var1 = 0
+        self.x_entry_other_pay_var1 = 0
+        self.entry_other_pay_var2 = 0
+        self.entry_other_pay_var3 = 0
+        self.x_entry_other_pay_var2 = 0
+        self.x_entry_other_pay_var3 = 0
+        self.entry_other_pay_var11 = 0
+        self.x_entry_other_pay_var11 = 0
+        self.entry_other_pay_var22 = 0
+        self.entry_other_pay_var33 = 0
+        self.x_entry_other_pay_var22 = 0
+        self.x_entry_other_pay_var33 = 0
+        self.cash = 0
+        self.card = 0
+        
+        
+       
+
+
         
         
 
@@ -118,22 +139,22 @@ class Lift(Tk):
             self.bt_reset.config(stat = NORMAL)
             self.lb_main.config(bg = 'blue')
             self.check_tools = self.check_tools_var.get()
+
+            
             
             counter()
             self.main_count = self.lift_count + self.drill + self.grinding_machine + self.screwdriver \
-            + self.press + self.fan + self.cleaner + self.welding_machine_auto \
-            + self.welding_machine + self.socket # Здесь добавляем дополнительные услуги
+                + self.press + self.fan + self.cleaner + self.welding_machine_auto \
+                + self.welding_machine + self.socket + int(self.x_entry_other_pay_var1) + int(self.x_entry_other_pay_var2) \
+                + int(self.x_entry_other_pay_var3)  # Здесь добавляем дополнительные услуги
             self.lb_main_count.config(text = f'Итого : {self.main_count} РУБ ')
 
             
 
-            list()
-            result = open(f"{time.strftime('%d - %m - %Y г')}.csv", "a+")
-            result.write(f"\n{self.entry_main_var.get()},{self.time1},"\
-                f"{self.finish_time},{self.time2},{self.main_list},{self.main_count}")
-            result.close()
+           
             
             calculation()
+            
             
 
         def counter():
@@ -182,6 +203,19 @@ class Lift(Tk):
             self.socket = 0
             self.x_socket = 0
             self.entry_main.delete(0, END)
+            self.entry_other_pay_var1 = 0
+            self.x_entry_other_pay_var1 = 0
+            self.entry_other_pay_var2 = 0
+            self.entry_other_pay_var3 = 0
+            self.x_entry_other_pay_var2 = 0
+            self.x_entry_other_pay_var3 = 0
+            self.entry_other_pay_var11 = 0
+            self.x_entry_other_pay_var11 = 0
+            self.entry_other_pay_var22 = 0
+            self.entry_other_pay_var33 = 0
+            self.x_entry_other_pay_var22 = 0
+            self.x_entry_other_pay_var33 = 0
+            
           
 
         def price_tools():
@@ -216,13 +250,40 @@ class Lift(Tk):
                 self.main_list += 'Торнадор '
             if self.socket  > 0:
                 self.main_list += 'Розетка '
-            
+
+        def other_list():
+            if self.entry_other_pay_var1:
+                self.other_list += f'/{self.entry_other_pay_var1.get()} {self.entry_other_pay_var11.get()}/'
+            if self.entry_other_pay_var2:
+                self.other_list += f'/{self.entry_other_pay_var2.get()} {self.entry_other_pay_var22.get()}/'
+            if self.entry_other_pay_var3:
+                self.other_list += f'/{self.entry_other_pay_var3.get()} {self.entry_other_pay_var33.get()}/'
              
         def calculation():
             self.win2 = Toplevel()
             self.win2.title(f'{self.entry_main_var.get()}  {name}')
             self.frame_calculation = Frame(self.win2, bg='red')
             self.frame_calculation.grid(row=0, column=0, columnspan=4, rowspan=2, sticky='nwse')
+
+            def pay_card():
+                if self.entry_pay_card.get():
+                    self.cash = self.main_count - int(self.entry_pay_card.get())
+                    self.card = int(self.entry_pay_card.get())
+                if not self.entry_pay_card.get():
+                    self.cash = self.main_count
+                    self.card = 0
+
+                
+
+                list()
+                other_list()
+                result = open(f"{time.strftime('%d - %m - %Y г')}.csv", "a+")
+                result.write(f"\n{self.entry_main_var.get()},{self.time1},"\
+                    f"{self.finish_time},{self.time2},{self.main_list},{self.other_list},{self.main_count},"\
+                    f"{self.cash}, {self.card}")
+                result.close()
+
+
 
             self.lb_pay = Label(self.frame_calculation, font=('Arial',12,'bold'),           
                 bg='blue',
@@ -246,7 +307,7 @@ class Lift(Tk):
                 width='15')
             self.entry_pay_card.grid(row=1, column=1, sticky='nwes')
 
-            self.bt_pay_card = Button(self.frame_calculation, text='Принять')
+            self.bt_pay_card = Button(self.frame_calculation, text='Принять', command=pay_card)
             self.bt_pay_card.grid(row=1, column=2, sticky='nwse')
 
         
@@ -326,6 +387,12 @@ class Lift(Tk):
                 self.tornador_var.set(self.x_tornador)
                 self.welding_machine_var.set(self.x_welding_machine)
                 self.socket_var.set(self.x_socket)
+                self.entry_other_pay_var1.set(self.x_entry_other_pay_var1)
+                self.entry_other_pay_var2.set(self.x_entry_other_pay_var2)
+                self.entry_other_pay_var3.set(self.x_entry_other_pay_var3)
+                self.entry_other_pay_var11.set(self.x_entry_other_pay_var11)
+                self.entry_other_pay_var22.set(self.x_entry_other_pay_var22)
+                self.entry_other_pay_var33.set(self.x_entry_other_pay_var33)
 
                 
 
@@ -341,6 +408,12 @@ class Lift(Tk):
                 self.x_tornador = self.tornador_var.get()
                 self.x_welding_machine = self.welding_machine_var.get()
                 self.x_socket = self.socket_var.get()
+                self.x_entry_other_pay_var1 = self.entry_other_pay_var1.get()
+                self.x_entry_other_pay_var2 = self.entry_other_pay_var2.get()
+                self.x_entry_other_pay_var3 = self.entry_other_pay_var3.get()
+                self.x_entry_other_pay_var11 = self.entry_other_pay_var11.get()
+                self.x_entry_other_pay_var22 = self.entry_other_pay_var22.get()
+                self.x_entry_other_pay_var33 = self.entry_other_pay_var33.get()
                 
                 self.win.destroy()
 
