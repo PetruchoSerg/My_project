@@ -83,14 +83,15 @@ class Lift(Tk):
         self.entry_other_pay_var3 = 0
         self.x_entry_other_pay_var2 = 0
         self.x_entry_other_pay_var3 = 0
-        self.entry_other_pay_var11 = 0
-        self.x_entry_other_pay_var11 = 0
-        self.entry_other_pay_var22 = 0
-        self.entry_other_pay_var33 = 0
-        self.x_entry_other_pay_var22 = 0
-        self.x_entry_other_pay_var33 = 0
+        self.entry_other_pay_var11 = ''
+        self.x_entry_other_pay_var11 = ''
+        self.entry_other_pay_var22 = ''
+        self.entry_other_pay_var33 = ''
+        self.x_entry_other_pay_var22 = ''
+        self.x_entry_other_pay_var33 = ''
         self.cash = 0
         self.card = 0
+        self.z  = 0
         
         
        
@@ -137,7 +138,6 @@ class Lift(Tk):
             self.lb_finishtime.config(text=self.finish_time)
             self.bt_stop.config(stat = DISABLED)
             self.bt_reset.config(stat = NORMAL)
-            self.lb_main.config(bg = 'blue')
             self.check_tools = self.check_tools_var.get()
 
             
@@ -155,7 +155,7 @@ class Lift(Tk):
             
             calculation()
             
-            
+          
 
         def counter():
             self.count_hour = int(self.finish_time[:2])
@@ -209,12 +209,15 @@ class Lift(Tk):
             self.entry_other_pay_var3 = 0
             self.x_entry_other_pay_var2 = 0
             self.x_entry_other_pay_var3 = 0
-            self.entry_other_pay_var11 = 0
-            self.x_entry_other_pay_var11 = 0
-            self.entry_other_pay_var22 = 0
-            self.entry_other_pay_var33 = 0
-            self.x_entry_other_pay_var22 = 0
-            self.x_entry_other_pay_var33 = 0
+            self.entry_other_pay_var11 = ''
+            self.x_entry_other_pay_var11 = ''
+            self.entry_other_pay_var22 = ''
+            self.entry_other_pay_var33 = ''
+            self.x_entry_other_pay_var22 = ''
+            self.x_entry_other_pay_var33 = ''
+            self.other_list = ''
+            self.main_list = ''
+            self.lb_main.config(bg = 'blue')
             
           
 
@@ -252,11 +255,11 @@ class Lift(Tk):
                 self.main_list += 'Розетка '
 
         def other_list():
-            if self.entry_other_pay_var1:
+            if self.x_entry_other_pay_var1 != 0:
                 self.other_list += f'/{self.entry_other_pay_var1.get()} {self.entry_other_pay_var11.get()}/'
-            if self.entry_other_pay_var2:
+            if self.x_entry_other_pay_var2 != 0:
                 self.other_list += f'/{self.entry_other_pay_var2.get()} {self.entry_other_pay_var22.get()}/'
-            if self.entry_other_pay_var3:
+            if self.x_entry_other_pay_var3 != 0:
                 self.other_list += f'/{self.entry_other_pay_var3.get()} {self.entry_other_pay_var33.get()}/'
              
         def calculation():
@@ -264,14 +267,21 @@ class Lift(Tk):
             self.win2.title(f'{self.entry_main_var.get()}  {name}')
             self.frame_calculation = Frame(self.win2, bg='red')
             self.frame_calculation.grid(row=0, column=0, columnspan=4, rowspan=2, sticky='nwse')
+            
+        
+            
 
             def pay_card():
-                if self.entry_pay_card.get():
-                    self.cash = self.main_count - int(self.entry_pay_card.get())
+                if self.entry_pay_card.get().isdigit() and int(self.main_count) == int(self.entry_pay_card.get()):
+                    self.cash = ''
                     self.card = int(self.entry_pay_card.get())
-                if not self.entry_pay_card.get():
-                    self.cash = self.main_count
-                    self.card = 0
+                if self.entry_pay_card.get().isdigit() and int(self.main_count) != int(self.entry_pay_card.get()):
+                    self.cash = int(self.main_count) - int(self.entry_pay_card.get())
+                    self.card = int(self.entry_pay_card.get())
+                if not self.entry_pay_card.get().isdigit():
+                    self.cash = int(self.main_count)
+                    self.card = ''
+                
 
                 
 
@@ -283,14 +293,22 @@ class Lift(Tk):
                     f"{self.cash}, {self.card}")
                 result.close()
 
+                self.lb_pay.config(text=f'Сумма : {self.main_count} РУБ \n Время : {self.finish_time} \n {self.main_list} \n {self.other_list} ')
+
+                #self.win2.destroy()
+
+            
+
+                
+
 
 
             self.lb_pay = Label(self.frame_calculation, font=('Arial',12,'bold'),           
                 bg='blue',
                 fg='white',
-                height='4',
+                height='5',
                 width='60',
-                text=f'Сумма : {self.main_count} РУБ \n Время : {self.finish_time} \n {self.main_list}')
+                text=f'Сумма : {self.main_count} РУБ \n Время : {self.finish_time} \n {self.main_list} \n {self.other_list} ')
             self.lb_pay.grid(row=0, column=0, columnspan=3, sticky='nwes')
 
             self.lb_pay_card = Label(self.frame_calculation, font=('Arial',12,'bold'),           
@@ -565,8 +583,9 @@ class Lift(Tk):
                         anchor= 'c')
             self.lb_entry_other_pay .grid(row=7, column=0, columnspan=2, sticky='nwes')
 
-            self.entry_other_pay_var1 = StringVar()
-            self.entry_other_pay1 = Entry(self.frame_options, bg='white', textvariable= self.entry_other_pay_var1)
+            self.entry_other_pay_var1 = IntVar()
+            self.entry_other_pay1 = Spinbox(self.frame_options, from_=0, to=500, increment=10,
+                bg='white', textvariable= self.entry_other_pay_var1)
             self.entry_other_pay1.grid(row=8, column=0, sticky='nwes')
 
             
@@ -575,8 +594,9 @@ class Lift(Tk):
             self.entry_other_pay11.grid(row=8, column=1, sticky='nwes')
 
 
-            self.entry_other_pay_var2 = StringVar()
-            self.entry_other_pay2 = Entry(self.frame_options, bg='white', textvariable= self.entry_other_pay_var2)
+            self.entry_other_pay_var2 = IntVar()
+            self.entry_other_pay2 = Spinbox(self.frame_options, from_=0, to=500, increment=10,
+                bg='white', textvariable= self.entry_other_pay_var2)
             self.entry_other_pay2.grid(row=9, column=0, sticky='nwes')
 
             
@@ -584,8 +604,9 @@ class Lift(Tk):
             self.entry_other_pay22 = Entry(self.frame_options, bg='white', textvariable= self.entry_other_pay_var22)
             self.entry_other_pay22.grid(row=9, column=1, sticky='nwes')
 
-            self.entry_other_pay_var3 = StringVar()
-            self.entry_other_pay3 = Entry(self.frame_options, bg='white', textvariable= self.entry_other_pay_var3)
+            self.entry_other_pay_var3 = IntVar()
+            self.entry_other_pay3 = Spinbox(self.frame_options, from_=0, to=500, increment=10,
+                bg='white', textvariable= self.entry_other_pay_var3)
             self.entry_other_pay3.grid(row=10, column=0, sticky='nwes')
 
             
