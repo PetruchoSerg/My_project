@@ -1,5 +1,3 @@
-from logging import setLogRecordFactory
-from pickletools import int4
 from tkinter import *
 import time
 
@@ -266,7 +264,7 @@ class Lift(Tk):
             self.win2 = Toplevel()
             self.win2.title(f'{self.entry_main_var.get()}  {name}')
             self.frame_calculation = Frame(self.win2, bg='red')
-            self.frame_calculation.grid(row=0, column=0, columnspan=4, rowspan=2, sticky='nwse')
+            self.frame_calculation.grid(row=0, column=0, columnspan=5, rowspan=2, sticky='nwse')
             
         
             
@@ -285,21 +283,23 @@ class Lift(Tk):
 
                 
 
-                list()
-                other_list()
+                
                 result = open(f"{time.strftime('%d - %m - %Y г')}.csv", "a+")
                 result.write(f"\n{self.entry_main_var.get()},{self.time1},"\
                     f"{self.finish_time},{self.time2},{self.main_list},{self.other_list},{self.main_count},"\
                     f"{self.cash}, {self.card}")
                 result.close()
 
-                self.lb_pay.config(text=f'Сумма : {self.main_count} РУБ \n Время : {self.finish_time} \n {self.main_list} \n {self.other_list} ')
-
+                self.lb_pay.config(text=f'Сумма : {self.main_count} РУБ \n Время : {self.finish_time} \n {self.main_list} \n {self.other_list} '\
+                    f'\n Наличные: {self.cash}   Карта: {self.card}')
+                self.bt_pay_card.config(stat = DISABLED)
+                self.entry_pay_card.config(stat = DISABLED)
                 #self.win2.destroy()
 
             
 
-                
+            list()
+            other_list()    
 
 
 
@@ -327,6 +327,9 @@ class Lift(Tk):
 
             self.bt_pay_card = Button(self.frame_calculation, text='Принять', command=pay_card)
             self.bt_pay_card.grid(row=1, column=2, sticky='nwse')
+
+            self.bt_pay_end = Button(self.frame_calculation, text='ЗАКРЫТЬ', command = lambda: self.win2.destroy())
+            self.bt_pay_end.grid(row=2, columnspan=5, sticky='nwse')
 
         
              
